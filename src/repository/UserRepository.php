@@ -15,10 +15,12 @@ class UserRepository {
             $password = $user->getPassword();
             $role = $user->getRole();
             $grade = $user->getGrade();
+            $etudiantId = $user->getEtudiantId();
             $dateCreation = $user->getDateCreation()->format("Y-m-d H:i:s");
             
-            $sql = "INSERT INTO `users` (`nom`, `prenom`, `email`, `password`, `role`, `grade`, `dateCreation`) 
-                    VALUES ('$nom', '$prenom', '$email', '$password', '$role', '$grade', '$dateCreation')";
+            $sql = "INSERT INTO `users` (`nom`, `prenom`, `email`, `password`, `role`, `grade`, `etudiant_id`, `dateCreation`) 
+                    VALUES ('$nom', '$prenom', '$email', '$password', '$role', '$grade', " . 
+                    ($etudiantId ? $etudiantId : 'NULL') . ", '$dateCreation')";
             Database::getPdo()->exec($sql);
             return Database::getPdo()->lastInsertId();
         } catch (\PDOException $ex) {
@@ -62,6 +64,19 @@ class UserRepository {
     public function selectById(int $id): User|null {
         try {
             $sql = "SELECT * FROM users WHERE id = $id";
+            $cursor = Database::getPdo()->query($sql);
+            if($row = $cursor->fetch()) {
+                return User::of($row);
+            }
+        } catch (\PDOException $ex) {
+            print $ex->getMessage()."\n";
+        }
+        return null;
+    }
+
+    public function findByEtudiantId(int $etudiantId): User|null {
+        try {
+            $sql = "SELECT * FROM users WHERE etudiant_id = $etudiantId";
             $cursor = Database::getPdo()->query($sql);
             if($row = $cursor->fetch()) {
                 return User::of($row);

@@ -7,6 +7,7 @@ class User{
     private string $password;
     private string $role; // RP, ATTACHE, PROFESSEUR, ETUDIANT
     private string $grade; // Pour les professeurs
+    private ?int $etudiantId; // Pour lier un compte utilisateur à un étudiant
     private DateTime $dateCreation;
 
     public function __construct(string $nom="", string $prenom="", string $email="", string $password="", string $role="")
@@ -17,6 +18,7 @@ class User{
         $this->password = $password;
         $this->role = $role;
         $this->grade = "";
+        $this->etudiantId = null;
         $this->dateCreation = new DateTime();
     }
 
@@ -38,6 +40,9 @@ class User{
         $user->setRole($row['role']);
         if(isset($row['grade'])) {
             $user->setGrade($row['grade']);
+        }
+        if(isset($row['etudiant_id'])) {
+            $user->setEtudiantId($row['etudiant_id']);
         }
         $user->setDateCreation(new DateTime($row['dateCreation']));
         return $user;
@@ -64,6 +69,9 @@ class User{
     
     public function getGrade(): string { return $this->grade; }
     public function setGrade(string $grade): void { $this->grade = $grade; }
+    
+    public function getEtudiantId(): ?int { return $this->etudiantId; }
+    public function setEtudiantId(?int $etudiantId): void { $this->etudiantId = $etudiantId; }
     
     public function getDateCreation(): DateTime { return $this->dateCreation; }
     public function setDateCreation(DateTime $dateCreation): void { $this->dateCreation = $dateCreation; }
