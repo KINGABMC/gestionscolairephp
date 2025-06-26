@@ -1,9 +1,16 @@
 <main class="container my-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2><i class="fas fa-users me-2"></i>Gestion des Étudiants</h2>
-        <a href="index.php?controller=etudiant&action=form-etudiant" class="btn btn-primary">
-            <i class="fas fa-user-plus me-1"></i>Nouvel Étudiant
-        </a>
+        <div>
+            <?php if($_SESSION['user']->getRole() == 'RP'): ?>
+            <a href="index.php?controller=etudiant&action=create-accounts" class="btn btn-warning me-2">
+                <i class="fas fa-user-cog me-1"></i>Créer comptes manquants
+            </a>
+            <?php endif; ?>
+            <a href="index.php?controller=etudiant&action=form-etudiant" class="btn btn-primary">
+                <i class="fas fa-user-plus me-1"></i>Nouvel Étudiant
+            </a>
+        </div>
     </div>
     
     <!-- Formulaire de recherche -->

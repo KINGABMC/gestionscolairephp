@@ -1,12 +1,15 @@
 <?php
 require_once "../src/services/EtudiantService.php";
+require_once "../src/services/AuthService.php";
 require_once "../src/models/Etudiant.php";
 
 class EtudiantController {
     private EtudiantService $etudiantService;
+    private AuthService $authService;
 
     public function __construct() {
         $this->etudiantService = new EtudiantService();
+        $this->authService = new AuthService();
         $this->handleRequest();
     }
 
@@ -22,6 +25,9 @@ class EtudiantController {
                 break;
             case 'save-etudiant':
                 $this->saveEtudiant();
+                break;
+            case 'create-accounts':
+                $this->createStudentAccounts();
                 break;
             default:
                 $this->showListEtudiant();
@@ -54,5 +60,19 @@ class EtudiantController {
         $this->etudiantService->addEtudiant($etudiant);
         
         header("location:index.php?controller=etudiant&action=list-etudiant");
+    }
+
+    public function createStudentAccounts() {
+        // Vérifier les permissions (seul RP peut faire ça)
+        if (!$this->authService->hasRole('RP')) {
+            header("location:index.php?controller=dashboard");
+            return;
+        }
+
+        $results = $this->etudiantService->createAccountsForExistingStudents();
+        
+        require_once "../views/layout/header.html.php";
+        require_once "../views/etudiant/create-accounts-result.html.php";
+        require_once "../views/layout/footer.html.php";
     }
 }
